@@ -1,49 +1,49 @@
 CREATE TABLE "company" (
   "id" uuid PRIMARY KEY NOT NULL,
   "company_name" varchar NOT NULL,
-  "stockSymbol" varchar NOT NULL,
+  "stock_symbol" varchar NOT NULL,
   "created_at" date DEFAULT (now())
 );
 
 CREATE TABLE "stock_price" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "company_id" uuid NOT NULL,
   "cur_date" date NOT NULL
 );
 
 CREATE TABLE "stock_policy" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "company_id" uuid NOT NULL,
   "cur_date" date NOT NULL
 );
 
 CREATE TABLE "composite_income_sheet" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "company_id" uuid NOT NULL,
   "cur_date" date NOT NULL
 );
 
 CREATE TABLE "balance_sheet" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "company_id" uuid NOT NULL,
   "cur_date" date NOT NULL
 );
 
 CREATE TABLE "month_income_sheet" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "company_id" uuid NOT NULL,
   "cur_date" date NOT NULL
 );
 
 CREATE TABLE "cash_flow" (
-  "id" SERIAL PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "company_id" uuid NOT NULL,
   "cur_date" date NOT NULL
 );
 
 CREATE INDEX ON "company" ("company_name");
 
-CREATE INDEX ON "company" ("stockSymbol");
+CREATE INDEX ON "company" ("stock_symbol");
 
 CREATE INDEX ON "stock_price" ("company_id");
 

@@ -2,10 +2,7 @@ module stock-prediction-backend
 
 go 1.17
 
-require (
-	github.com/gin-gonic/gin v1.8.0
-	github.com/google/uuid v1.3.0
-)
+require github.com/gin-gonic/gin v1.8.0
 
 require (
 	github.com/gin-contrib/sse v0.1.0 // indirect

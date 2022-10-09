@@ -51,5 +51,6 @@ type StockPolicy struct {
 type StockPrice struct {
 	ID        int64     `json:"id"`
 	CompanyID uuid.UUID `json:"company_id"`
+	Price     int32     `json:"price"`
 	CurDate   time.Time `json:"cur_date"`
 }

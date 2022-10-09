@@ -2,12 +2,12 @@
 
 ## Start steps
 
-> ` go mod download `
+> `$ go mod download `
 
-> ` go get -u github.com/gin-gonic/gin`
+> `$ go get -u github.com/gin-gonic/gin`
 
-> ` go run main.go`
+> `$ go run main.go`
 
-## remove unused package
+## Remove unused package and install required package
 
-> `go mod tidy` 
+> `$ go mod tidy` 

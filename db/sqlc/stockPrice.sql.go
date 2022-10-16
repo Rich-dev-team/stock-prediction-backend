@@ -7,19 +7,17 @@ package db
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 const createStockPrice = `-- name: CreateStockPrice :one
 INSERT INTO stock_price(company_id, price)
 VALUES($1, $2)
-RETURNING id, company_id, price, cur_date
+RETURNING id, company_id, price, created_at
 `
 
 type CreateStockPriceParams struct {
-	CompanyID uuid.UUID `json:"company_id"`
-	Price     int32     `json:"price"`
+	CompanyID int64 `json:"company_id"`
+	Price     int32 `json:"price"`
 }
 
 func (q *Queries) CreateStockPrice(ctx context.Context, arg CreateStockPriceParams) (StockPrice, error) {
@@ -29,13 +27,13 @@ func (q *Queries) CreateStockPrice(ctx context.Context, arg CreateStockPricePara
 		&i.ID,
 		&i.CompanyID,
 		&i.Price,
-		&i.CurDate,
+		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listAllStockPrice = `-- name: ListAllStockPrice :many
-SELECT id, company_id, price, cur_date
+SELECT id, company_id, price, created_at
 FROM stock_price
 where company_id = $1
 ORDER BY cur_date
@@ -43,9 +41,9 @@ LIMIT $2 OFFSET $3
 `
 
 type ListAllStockPriceParams struct {
-	CompanyID uuid.UUID `json:"company_id"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
+	CompanyID int64 `json:"company_id"`
+	Limit     int32 `json:"limit"`
+	Offset    int32 `json:"offset"`
 }
 
 func (q *Queries) ListAllStockPrice(ctx context.Context, arg ListAllStockPriceParams) ([]StockPrice, error) {
@@ -61,7 +59,7 @@ func (q *Queries) ListAllStockPrice(ctx context.Context, arg ListAllStockPricePa
 			&i.ID,
 			&i.CompanyID,
 			&i.Price,
-			&i.CurDate,
+			&i.CreatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -77,7 +75,7 @@ func (q *Queries) ListAllStockPrice(ctx context.Context, arg ListAllStockPricePa
 }
 
 const listStockPriceByRange = `-- name: ListStockPriceByRange :many
-SELECT id, company_id, price, cur_date
+SELECT id, company_id, price, created_at
 FROM stock_price
 WHERE company_id = $1 BETWEEN $2 AND $3
 ORDER BY cur_date
@@ -109,7 +107,7 @@ func (q *Queries) ListStockPriceByRange(ctx context.Context, arg ListStockPriceB
 			&i.ID,
 			&i.CompanyID,
 			&i.Price,
-			&i.CurDate,
+			&i.CreatedAt,
 		); err != nil {
 			return nil, err
 		}

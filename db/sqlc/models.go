@@ -7,24 +7,22 @@ package db
 import (
 	"database/sql"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type BalanceSheet struct {
 	ID        int64     `json:"id"`
-	CompanyID uuid.UUID `json:"company_id"`
-	CurDate   time.Time `json:"cur_date"`
+	CompanyID int64     `json:"company_id"`
+	Date      time.Time `json:"date"`
 }
 
 type CashFlow struct {
 	ID        int64     `json:"id"`
-	CompanyID uuid.UUID `json:"company_id"`
-	CurDate   time.Time `json:"cur_date"`
+	CompanyID int64     `json:"company_id"`
+	Date      time.Time `json:"date"`
 }
 
 type Company struct {
-	ID          uuid.UUID    `json:"id"`
+	ID          int64        `json:"id"`
 	CompanyName string       `json:"company_name"`
 	StockSymbol string       `json:"stock_symbol"`
 	CreatedAt   sql.NullTime `json:"created_at"`
@@ -32,25 +30,25 @@ type Company struct {
 
 type CompositeIncomeSheet struct {
 	ID        int64     `json:"id"`
-	CompanyID uuid.UUID `json:"company_id"`
-	CurDate   time.Time `json:"cur_date"`
+	CompanyID int64     `json:"company_id"`
+	Date      time.Time `json:"date"`
 }
 
 type MonthIncomeSheet struct {
 	ID        int64     `json:"id"`
-	CompanyID uuid.UUID `json:"company_id"`
-	CurDate   time.Time `json:"cur_date"`
+	CompanyID int64     `json:"company_id"`
+	Date      time.Time `json:"date"`
 }
 
 type StockPolicy struct {
 	ID        int64     `json:"id"`
-	CompanyID uuid.UUID `json:"company_id"`
-	CurDate   time.Time `json:"cur_date"`
+	CompanyID int64     `json:"company_id"`
+	Date      time.Time `json:"date"`
 }
 
 type StockPrice struct {
 	ID        int64     `json:"id"`
-	CompanyID uuid.UUID `json:"company_id"`
+	CompanyID int64     `json:"company_id"`
 	Price     int32     `json:"price"`
-	CurDate   time.Time `json:"cur_date"`
+	CreatedAt time.Time `json:"created_at"`
 }

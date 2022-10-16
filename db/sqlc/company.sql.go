@@ -7,25 +7,24 @@ package db
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 const createCompany = `-- name: CreateCompany :one
 INSERT INTO company(
-    company_name, stock_symbol
+    id, company_name, stock_symbol
 ) VALUES(
-    $1, $2
+    $1, $2, $3
 ) RETURNING id, company_name, stock_symbol, created_at
 `
 
 type CreateCompanyParams struct {
+	ID          int64  `json:"id"`
 	CompanyName string `json:"company_name"`
 	StockSymbol string `json:"stock_symbol"`
 }
 
 func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (Company, error) {
-	row := q.db.QueryRowContext(ctx, createCompany, arg.CompanyName, arg.StockSymbol)
+	row := q.db.QueryRowContext(ctx, createCompany, arg.ID, arg.CompanyName, arg.StockSymbol)
 	var i Company
 	err := row.Scan(
 		&i.ID,
@@ -40,7 +39,7 @@ const deleteCompany = `-- name: DeleteCompany :exec
 DELETE FROM company WHERE id = $1
 `
 
-func (q *Queries) DeleteCompany(ctx context.Context, id uuid.UUID) error {
+func (q *Queries) DeleteCompany(ctx context.Context, id int64) error {
 	_, err := q.db.ExecContext(ctx, deleteCompany, id)
 	return err
 }
@@ -110,8 +109,8 @@ RETURNING id, company_name, stock_symbol, created_at
 `
 
 type UpdateCompanyNameParams struct {
-	ID          uuid.UUID `json:"id"`
-	CompanyName string    `json:"company_name"`
+	ID          int64  `json:"id"`
+	CompanyName string `json:"company_name"`
 }
 
 func (q *Queries) UpdateCompanyName(ctx context.Context, arg UpdateCompanyNameParams) (Company, error) {
@@ -134,8 +133,8 @@ RETURNING id, company_name, stock_symbol, created_at
 `
 
 type UpdateCompanyStockSymbolParams struct {
-	ID          uuid.UUID `json:"id"`
-	StockSymbol string    `json:"stock_symbol"`
+	ID          int64  `json:"id"`
+	StockSymbol string `json:"stock_symbol"`
 }
 
 func (q *Queries) UpdateCompanyStockSymbol(ctx context.Context, arg UpdateCompanyStockSymbolParams) (Company, error) {

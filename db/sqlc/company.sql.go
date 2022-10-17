@@ -10,21 +10,18 @@ import (
 )
 
 const createCompany = `-- name: CreateCompany :one
-INSERT INTO company(
-    id, company_name, stock_symbol
-) VALUES(
-    $1, $2, $3
-) RETURNING id, company_name, stock_symbol, created_at
+INSERT INTO company(company_name, stock_symbol)
+VALUES($1, $2)
+RETURNING id, company_name, stock_symbol, created_at
 `
 
 type CreateCompanyParams struct {
-	ID          int64  `json:"id"`
 	CompanyName string `json:"company_name"`
 	StockSymbol string `json:"stock_symbol"`
 }
 
 func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (Company, error) {
-	row := q.db.QueryRowContext(ctx, createCompany, arg.ID, arg.CompanyName, arg.StockSymbol)
+	row := q.db.QueryRowContext(ctx, createCompany, arg.CompanyName, arg.StockSymbol)
 	var i Company
 	err := row.Scan(
 		&i.ID,
@@ -36,7 +33,8 @@ func (q *Queries) CreateCompany(ctx context.Context, arg CreateCompanyParams) (C
 }
 
 const deleteCompany = `-- name: DeleteCompany :exec
-DELETE FROM company WHERE id = $1
+DELETE FROM company
+WHERE id = $1
 `
 
 func (q *Queries) DeleteCompany(ctx context.Context, id int64) error {
@@ -45,8 +43,10 @@ func (q *Queries) DeleteCompany(ctx context.Context, id int64) error {
 }
 
 const getCompany = `-- name: GetCompany :one
-SELECT id, company_name, stock_symbol, created_at FROM company
-WHERE company_name = $1 LIMIT 1
+SELECT id, company_name, stock_symbol, created_at
+FROM company
+WHERE company_name = $1
+LIMIT 1
 `
 
 func (q *Queries) GetCompany(ctx context.Context, companyName string) (Company, error) {
@@ -62,10 +62,10 @@ func (q *Queries) GetCompany(ctx context.Context, companyName string) (Company, 
 }
 
 const listCompany = `-- name: ListCompany :many
-SELECT id, company_name, stock_symbol, created_at FROM company
+SELECT id, company_name, stock_symbol, created_at
+FROM company
 ORDER BY id
-LIMIT $1
-OFFSET $2
+LIMIT $1 OFFSET $2
 `
 
 type ListCompanyParams struct {
@@ -102,7 +102,7 @@ func (q *Queries) ListCompany(ctx context.Context, arg ListCompanyParams) ([]Com
 }
 
 const updateCompanyName = `-- name: UpdateCompanyName :one
-UPDATE company 
+UPDATE company
 SET company_name = $2
 where id = $1
 RETURNING id, company_name, stock_symbol, created_at
@@ -126,7 +126,7 @@ func (q *Queries) UpdateCompanyName(ctx context.Context, arg UpdateCompanyNamePa
 }
 
 const updateCompanyStockSymbol = `-- name: UpdateCompanyStockSymbol :one
-UPDATE company 
+UPDATE company
 SET stock_symbol = $2
 where id = $1
 RETURNING id, company_name, stock_symbol, created_at

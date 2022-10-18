@@ -7,21 +7,23 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createStockPrice = `-- name: CreateStockPrice :one
-INSERT INTO stock_price(company_id, price)
-VALUES($1, $2)
+INSERT INTO stock_price(company_id, price, created_at)
+VALUES($1, $2, $3)
 RETURNING id, company_id, price, created_at
 `
 
 type CreateStockPriceParams struct {
-	CompanyID int64 `json:"company_id"`
-	Price     int32 `json:"price"`
+	CompanyID int64     `json:"company_id"`
+	Price     int32     `json:"price"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func (q *Queries) CreateStockPrice(ctx context.Context, arg CreateStockPriceParams) (StockPrice, error) {
-	row := q.db.QueryRowContext(ctx, createStockPrice, arg.CompanyID, arg.Price)
+	row := q.db.QueryRowContext(ctx, createStockPrice, arg.CompanyID, arg.Price, arg.CreatedAt)
 	var i StockPrice
 	err := row.Scan(
 		&i.ID,
@@ -32,11 +34,21 @@ func (q *Queries) CreateStockPrice(ctx context.Context, arg CreateStockPricePara
 	return i, err
 }
 
+const deleteStockPrice = `-- name: DeleteStockPrice :exec
+DELETE FROM stock_price
+WHERE id =$1
+`
+
+func (q *Queries) DeleteStockPrice(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteStockPrice, id)
+	return err
+}
+
 const listAllStockPrice = `-- name: ListAllStockPrice :many
 SELECT id, company_id, price, created_at
 FROM stock_price
 where company_id = $1
-ORDER BY cur_date
+ORDER BY created_at
 LIMIT $2 OFFSET $3
 `
 
@@ -78,7 +90,7 @@ const listStockPriceByRange = `-- name: ListStockPriceByRange :many
 SELECT id, company_id, price, created_at
 FROM stock_price
 WHERE company_id = $1 BETWEEN $2 AND $3
-ORDER BY cur_date
+ORDER BY created_at
 LIMIT $4
 `
 
@@ -120,4 +132,28 @@ func (q *Queries) ListStockPriceByRange(ctx context.Context, arg ListStockPriceB
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateStockPrice = `-- name: UpdateStockPrice :one
+UPDATE stock_price
+SET price = $2
+where id = $1
+RETURNING id, company_id, price, created_at
+`
+
+type UpdateStockPriceParams struct {
+	ID    int64 `json:"id"`
+	Price int32 `json:"price"`
+}
+
+func (q *Queries) UpdateStockPrice(ctx context.Context, arg UpdateStockPriceParams) (StockPrice, error) {
+	row := q.db.QueryRowContext(ctx, updateStockPrice, arg.ID, arg.Price)
+	var i StockPrice
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.Price,
+		&i.CreatedAt,
+	)
+	return i, err
 }

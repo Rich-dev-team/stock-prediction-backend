@@ -62,6 +62,23 @@ func TestUpdateCompany(t *testing.T) {
 	require.Equal(t, company1.StockSymbol, company2.StockSymbol)
 	require.Equal(t, company1.CreatedAt, company2.CreatedAt)
 }
+func TestUpdateStockSymbol(t *testing.T) {
+	company1 := createRandomCompany(t)
+
+	args := UpdateCompanyStockSymbolParams{
+		ID:          company1.ID,
+		StockSymbol: company1.StockSymbol,
+	}
+	company2, err := testQueries.UpdateCompanyStockSymbol(context.Background(), args)
+	require.NoError(t, err)
+	require.NotEmpty(t, company2)
+
+	require.Equal(t, company1.ID, company2.ID)
+	require.Equal(t, args.StockSymbol, company2.StockSymbol)
+	require.Equal(t, company1.CompanyName, company2.CompanyName)
+	require.Equal(t, company1.CreatedAt, company2.CreatedAt)
+
+}
 
 func TestDeleteCompany(t *testing.T) {
 	company1 := createRandomCompany(t)

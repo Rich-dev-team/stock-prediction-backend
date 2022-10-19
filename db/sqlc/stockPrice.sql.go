@@ -36,7 +36,7 @@ func (q *Queries) CreateStockPrice(ctx context.Context, arg CreateStockPricePara
 
 const deleteStockPrice = `-- name: DeleteStockPrice :exec
 DELETE FROM stock_price
-WHERE id =$1
+WHERE id = $1
 `
 
 func (q *Queries) DeleteStockPrice(ctx context.Context, id int64) error {
@@ -89,23 +89,23 @@ func (q *Queries) ListAllStockPrice(ctx context.Context, arg ListAllStockPricePa
 const listStockPriceByRange = `-- name: ListStockPriceByRange :many
 SELECT id, company_id, price, created_at
 FROM stock_price
-WHERE company_id = $1 BETWEEN $2 AND $3
+WHERE company_id = $1 AND created_at BETWEEN $2 AND $3
 ORDER BY created_at
 LIMIT $4
 `
 
 type ListStockPriceByRangeParams struct {
-	Column1 interface{} `json:"column_1"`
-	Column2 interface{} `json:"column_2"`
-	Column3 interface{} `json:"column_3"`
-	Limit   int32       `json:"limit"`
+	CompanyID   int64     `json:"company_id"`
+	CreatedAt   time.Time `json:"created_at"`
+	CreatedAt_2 time.Time `json:"created_at_2"`
+	Limit       int32     `json:"limit"`
 }
 
 func (q *Queries) ListStockPriceByRange(ctx context.Context, arg ListStockPriceByRangeParams) ([]StockPrice, error) {
 	rows, err := q.db.QueryContext(ctx, listStockPriceByRange,
-		arg.Column1,
-		arg.Column2,
-		arg.Column3,
+		arg.CompanyID,
+		arg.CreatedAt,
+		arg.CreatedAt_2,
 		arg.Limit,
 	)
 	if err != nil {

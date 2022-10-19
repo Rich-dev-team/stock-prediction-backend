@@ -29,8 +29,12 @@ func RandomString(n int) string {
 	return sb.String()
 }
 
-func RandomCompanyName() string {
-	return RandomString(6)
+func RandomCompanyName(length int) string {
+	if length == 0{
+		length := 6
+		return RandomString(length)
+	}
+	return RandomString(length)
 }
 
 func RandomStockSymbol() string {

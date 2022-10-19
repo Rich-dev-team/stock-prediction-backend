@@ -10,7 +10,7 @@ RETURNING *;
 -- name: ListStockPriceByRange :many
 SELECT *
 FROM stock_price
-WHERE company_id = $1 BETWEEN $2 AND $3
+WHERE company_id = $1 AND created_at BETWEEN $2 AND $3
 ORDER BY created_at
 LIMIT $4;
 -- name: ListAllStockPrice :many

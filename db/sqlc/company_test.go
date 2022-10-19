@@ -11,7 +11,7 @@ import (
 
 func createRandomCompany(t *testing.T) Company {
 	args := CreateCompanyParams{
-		CompanyName: util.RandomCompanyName(),
+		CompanyName: util.RandomCompanyName(0),
 		StockSymbol: util.RandomStockSymbol(),
 	}
 	company, err := testQueries.CreateCompany(context.Background(), args)
@@ -50,7 +50,7 @@ func TestUpdateCompany(t *testing.T) {
 
 	args := UpdateCompanyNameParams{
 		ID:          company1.ID,
-		CompanyName: util.RandomCompanyName(),
+		CompanyName: util.RandomCompanyName(0),
 	}
 
 	company2, err := testQueries.UpdateCompanyName(context.Background(), args)

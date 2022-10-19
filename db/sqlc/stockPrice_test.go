@@ -42,6 +42,21 @@ func TestListPriceByRange(t *testing.T) {
 		createRandomStockPrice(t, company)
 	}
 
+	args := ListStockPriceByRangeParams{
+		CompanyID:   company.ID,
+		CreatedAt:   time.Now().Add(time.Second * -1),
+		CreatedAt_2: time.Now().Add(time.Second * 1),
+		Limit:       10,
+	}
+	prices, err := testQueries.ListStockPriceByRange(context.Background(), args)
+
+	require.NoError(t, err)
+	require.NotEmpty(t, prices)
+	require.Len(t, prices, 10)
+
+	for _, price := range prices {
+		require.NotEmpty(t, price)
+	}
 }
 
 func TestUpdateStockPrice(t *testing.T) {
@@ -61,4 +76,25 @@ func TestUpdateStockPrice(t *testing.T) {
 	require.Equal(t, price1.CompanyID, price2.CompanyID)
 	require.Equal(t, price2.Price, args.Price)
 	require.Equal(t, price1.CreatedAt, price2.CreatedAt)
+}
+
+func TestListAllStockPrice(t *testing.T){
+	company := createRandomCompany(t)
+	for i := 0; i < 10; i++ {
+		createRandomStockPrice(t, company)
+	}
+
+	args := ListAllStockPriceParams{
+		CompanyID: company.ID,
+		Limit: 3,
+		Offset: 3,
+	}
+	prices, err := testQueries.ListAllStockPrice(context.Background(), args)
+
+	require.NoError(t, err)
+	require.Len(t, prices, 3)
+
+	for _, price :=range prices{
+		require.NotEmpty(t, price)
+	}
 }

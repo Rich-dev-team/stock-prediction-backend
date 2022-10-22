@@ -14,6 +14,9 @@ migrateup:
 migratedown:
 	migrate -path ./db/migration/ -database "postgresql://root:secret@localhost:5432/stockdb?sslmode=disable" -verbose down
 
+cleanDirty:
+	migrate -path ./db/migration/ -database "postgresql://root:secret@localhost:5432/stockdb?sslmode=disable" -verbose force 1
+
 sqlc:
 	sqlc generate
 

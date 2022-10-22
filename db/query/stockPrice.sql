@@ -2,6 +2,14 @@
 INSERT INTO stock_price(company_id, price, created_at)
 VALUES($1, $2, $3)
 RETURNING *;
+-- name: CreateBatchStockPrice :many
+INSERT INTO stock_price(company_id, price, created_at)
+VALUES (
+        UNNEST (@companys_id::bigint []),
+        UNNEST (@prices::int []),
+        UNNEST (@created_ats::timestamptz [])
+    )
+RETURNING *;
 -- name: UpdateStockPrice :one
 UPDATE stock_price
 SET price = $2
@@ -10,7 +18,8 @@ RETURNING *;
 -- name: ListStockPriceByRange :many
 SELECT *
 FROM stock_price
-WHERE company_id = $1 AND created_at BETWEEN $2 AND $3
+WHERE company_id = $1
+    AND created_at BETWEEN $2 AND $3
 ORDER BY created_at
 LIMIT $4;
 -- name: ListAllStockPrice :many

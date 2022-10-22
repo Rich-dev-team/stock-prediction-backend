@@ -8,7 +8,53 @@ package db
 import (
 	"context"
 	"time"
+
+	"github.com/lib/pq"
 )
+
+const createBatchStockPrice = `-- name: CreateBatchStockPrice :many
+INSERT INTO stock_price(company_id, price, created_at)
+VALUES (
+        UNNEST ($1::bigint []),
+        UNNEST ($2::int []),
+        UNNEST ($3::timestamptz [])
+    )
+RETURNING id, company_id, price, created_at
+`
+
+type CreateBatchStockPriceParams struct {
+	CompanysID []int64     `json:"companys_id"`
+	Prices     []int32     `json:"prices"`
+	CreatedAts []time.Time `json:"created_ats"`
+}
+
+func (q *Queries) CreateBatchStockPrice(ctx context.Context, arg CreateBatchStockPriceParams) ([]StockPrice, error) {
+	rows, err := q.db.QueryContext(ctx, createBatchStockPrice, pq.Array(arg.CompanysID), pq.Array(arg.Prices), pq.Array(arg.CreatedAts))
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []StockPrice
+	for rows.Next() {
+		var i StockPrice
+		if err := rows.Scan(
+			&i.ID,
+			&i.CompanyID,
+			&i.Price,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
 
 const createStockPrice = `-- name: CreateStockPrice :one
 INSERT INTO stock_price(company_id, price, created_at)
@@ -89,7 +135,8 @@ func (q *Queries) ListAllStockPrice(ctx context.Context, arg ListAllStockPricePa
 const listStockPriceByRange = `-- name: ListStockPriceByRange :many
 SELECT id, company_id, price, created_at
 FROM stock_price
-WHERE company_id = $1 AND created_at BETWEEN $2 AND $3
+WHERE company_id = $1
+    AND created_at BETWEEN $2 AND $3
 ORDER BY created_at
 LIMIT $4
 `

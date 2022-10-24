@@ -11,3 +11,6 @@
 ## Remove unused package and install required package
 
 > `$ go mod tidy` 
+
+## Debug postgres lock
+> https://wiki.postgresql.org/wiki/Lock_Monitoring

@@ -136,24 +136,74 @@ const listStockPriceByRange = `-- name: ListStockPriceByRange :many
 SELECT id, company_id, price, created_at
 FROM stock_price
 WHERE company_id = $1
-    AND created_at BETWEEN $2 AND $3
+    AND created_at BETWEEN $3 AND $4
 ORDER BY created_at
-LIMIT $4
+LIMIT $2
 `
 
 type ListStockPriceByRangeParams struct {
-	CompanyID   int64     `json:"company_id"`
-	CreatedAt   time.Time `json:"created_at"`
-	CreatedAt_2 time.Time `json:"created_at_2"`
-	Limit       int32     `json:"limit"`
+	CompanyID int64     `json:"company_id"`
+	Limit     int32     `json:"limit"`
+	Starttime time.Time `json:"starttime"`
+	Endtime   time.Time `json:"endtime"`
 }
 
 func (q *Queries) ListStockPriceByRange(ctx context.Context, arg ListStockPriceByRangeParams) ([]StockPrice, error) {
 	rows, err := q.db.QueryContext(ctx, listStockPriceByRange,
 		arg.CompanyID,
-		arg.CreatedAt,
-		arg.CreatedAt_2,
 		arg.Limit,
+		arg.Starttime,
+		arg.Endtime,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []StockPrice
+	for rows.Next() {
+		var i StockPrice
+		if err := rows.Scan(
+			&i.ID,
+			&i.CompanyID,
+			&i.Price,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listStockPriceByRangeForUpdate = `-- name: ListStockPriceByRangeForUpdate :many
+SELECT id, company_id, price, created_at
+FROM stock_price
+WHERE company_id = $1
+    AND created_at BETWEEN $3 AND $4
+ORDER BY created_at
+LIMIT $2
+For NO KEY UPDATE
+`
+
+type ListStockPriceByRangeForUpdateParams struct {
+	CompanyID int64     `json:"company_id"`
+	Limit     int32     `json:"limit"`
+	Starttime time.Time `json:"starttime"`
+	Endtime   time.Time `json:"endtime"`
+}
+
+func (q *Queries) ListStockPriceByRangeForUpdate(ctx context.Context, arg ListStockPriceByRangeForUpdateParams) ([]StockPrice, error) {
+	rows, err := q.db.QueryContext(ctx, listStockPriceByRangeForUpdate,
+		arg.CompanyID,
+		arg.Limit,
+		arg.Starttime,
+		arg.Endtime,
 	)
 	if err != nil {
 		return nil, err

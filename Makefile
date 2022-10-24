@@ -23,6 +23,9 @@ sqlc:
 test:
 	go test -v -cover ./...
 
-PHONY= postgres createdb dropdb migrateUp migrateDown sqlc test
+connDB:
+	docker exec -it postgres12 psql -U root -d stockdb
+
+PHONY= postgres createdb dropdb migrateUp migrateDown sqlc test connDB
 
 .PHONY: $(PHONY)

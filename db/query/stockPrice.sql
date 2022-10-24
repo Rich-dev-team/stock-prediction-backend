@@ -19,9 +19,17 @@ RETURNING *;
 SELECT *
 FROM stock_price
 WHERE company_id = $1
-    AND created_at BETWEEN $2 AND $3
+    AND created_at BETWEEN sqlc.arg(startTime) AND sqlc.arg(endTime)
 ORDER BY created_at
-LIMIT $4;
+LIMIT $2;
+-- name: ListStockPriceByRangeForUpdate :many
+SELECT *
+FROM stock_price
+WHERE company_id = $1
+    AND created_at BETWEEN sqlc.arg(startTime) AND sqlc.arg(endTime)
+ORDER BY created_at
+LIMIT $2
+For NO KEY UPDATE;
 -- name: ListAllStockPrice :many
 SELECT *
 FROM stock_price

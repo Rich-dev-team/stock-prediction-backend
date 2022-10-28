@@ -26,6 +26,9 @@ test:
 connDB:
 	docker exec -it postgres12 psql -U root -d stockdb
 
-PHONY= postgres createdb dropdb migrateUp migrateDown sqlc test connDB
+server:
+	go run main.go
+
+PHONY= postgres createdb dropdb migrateUp migrateDown sqlc test connDB server
 
 .PHONY: $(PHONY)

@@ -31,7 +31,7 @@ func createRandomBatchStockParam(t *testing.T, amount int) CreateBatchStockPrice
 
 func TestCreateBatchStockPrice(t *testing.T) {
 	amount := 20
-	exchange := NewExchange(testDB)
+	store := NewStore(testDB)
 
 	n := 10
 	// run n concurrent store the stock
@@ -43,7 +43,7 @@ func TestCreateBatchStockPrice(t *testing.T) {
 
 		go func() {
 			arg := createRandomBatchStockParam(t, amount)
-			result, err := exchange.CreateStocksTx(context.Background(), arg)
+			result, err := store.CreateStocksTx(context.Background(), arg)
 
 			errs <- err
 			results <- result

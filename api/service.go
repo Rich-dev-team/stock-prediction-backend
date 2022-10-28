@@ -8,18 +8,26 @@ import (
 
 // Server serves HTTP requests for our stock
 type Server struct {
-	exchange *db.Exchange
-	router   *gin.Engine
+	store  *db.Store
+	router *gin.Engine
 }
 
 // New server creates a new HTTP Server and setup routing
-func NewServer(exchange *db.Exchange) *Server {
-	server := &Server{exchange: exchange}
+func NewServer(store *db.Store) *Server {
+	server := &Server{store: store}
 
 	router := gin.Default()
 	router.POST("/companys", server.createCompany)
 
 	server.router = router
 	return server
+}
 
+// Start runs the HTTP server on a specific address
+func (server *Server) Start(address string) error {
+	return server.router.Run(address)
+}
+
+func errorResponse(err error) gin.H {
+	return gin.H{"error": err.Error()}
 }

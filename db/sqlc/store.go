@@ -6,22 +6,22 @@ import (
 	"fmt"
 )
 
-// Exchange provides all functions to execute db queries and transactions
-type Exchange struct {
+// Store provides all functions to execute db queries and transactions
+type Store struct {
 	*Queries
 	db *sql.DB
 }
 
-// NewExchange to create new Store
-func NewExchange(db *sql.DB) *Exchange {
-	return &Exchange{
+// NewStore to create new Store
+func NewStore(db *sql.DB) *Store {
+	return &Store{
 		db:      db,
 		Queries: New(db),
 	}
 }
 
-func (exchange *Exchange) execTx(ctx context.Context, fn func(*Queries) error) error {
-	tx, err := exchange.db.BeginTx(ctx, nil)
+func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
+	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
@@ -37,10 +37,10 @@ func (exchange *Exchange) execTx(ctx context.Context, fn func(*Queries) error) e
 	return tx.Commit()
 }
 
-func (exchange *Exchange) CreateStocksTx(ctx context.Context, arg CreateBatchStockPriceParams) ([]StockPrice, error) {
+func (store *Store) CreateStocksTx(ctx context.Context, arg CreateBatchStockPriceParams) ([]StockPrice, error) {
 	var results []StockPrice
 
-	err := exchange.execTx(ctx, func(q *Queries) error {
+	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 
 		results, err = q.CreateBatchStockPrice(ctx, CreateBatchStockPriceParams{

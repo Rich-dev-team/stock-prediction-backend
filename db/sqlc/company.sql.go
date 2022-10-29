@@ -79,7 +79,7 @@ func (q *Queries) ListCompany(ctx context.Context, arg ListCompanyParams) ([]Com
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Company
+	items := []Company{}
 	for rows.Next() {
 		var i Company
 		if err := rows.Scan(

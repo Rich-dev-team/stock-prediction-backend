@@ -34,7 +34,7 @@ func (q *Queries) CreateBatchStockPrice(ctx context.Context, arg CreateBatchStoc
 		return nil, err
 	}
 	defer rows.Close()
-	var items []StockPrice
+	items := []StockPrice{}
 	for rows.Next() {
 		var i StockPrice
 		if err := rows.Scan(
@@ -110,7 +110,7 @@ func (q *Queries) ListAllStockPrice(ctx context.Context, arg ListAllStockPricePa
 		return nil, err
 	}
 	defer rows.Close()
-	var items []StockPrice
+	items := []StockPrice{}
 	for rows.Next() {
 		var i StockPrice
 		if err := rows.Scan(
@@ -159,7 +159,7 @@ func (q *Queries) ListStockPriceByRange(ctx context.Context, arg ListStockPriceB
 		return nil, err
 	}
 	defer rows.Close()
-	var items []StockPrice
+	items := []StockPrice{}
 	for rows.Next() {
 		var i StockPrice
 		if err := rows.Scan(
@@ -209,7 +209,7 @@ func (q *Queries) ListStockPriceByRangeForUpdate(ctx context.Context, arg ListSt
 		return nil, err
 	}
 	defer rows.Close()
-	var items []StockPrice
+	items := []StockPrice{}
 	for rows.Next() {
 		var i StockPrice
 		if err := rows.Scan(

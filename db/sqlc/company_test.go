@@ -31,10 +31,23 @@ func TestCreateCompany(t *testing.T) {
 	createRandomCompany(t)
 }
 
-func TestGetCompany(t *testing.T) {
+func TestGetCompanyByName(t *testing.T) {
 	// create company
 	company1 := createRandomCompany(t)
-	company2, err := testQueries.GetCompany(context.Background(), company1.CompanyName)
+	company2, err := testQueries.GetCompanyByName(context.Background(), company1.CompanyName)
+	require.NoError(t, err)
+	require.NotEmpty(t, company2)
+
+	require.Equal(t, company1.ID, company2.ID)
+	require.Equal(t, company1.CompanyName, company2.CompanyName)
+	require.Equal(t, company1.StockSymbol, company2.StockSymbol)
+	require.Equal(t, company1.CreatedAt, company2.CreatedAt)
+
+}
+func TestGetCompanyById(t *testing.T) {
+	// create company
+	company1 := createRandomCompany(t)
+	company2, err := testQueries.GetCompanyById(context.Background(), company1.ID)
 	require.NoError(t, err)
 	require.NotEmpty(t, company2)
 
@@ -86,7 +99,7 @@ func TestDeleteCompany(t *testing.T) {
 	err := testQueries.DeleteCompany(context.Background(), company1.ID)
 	require.NoError(t, err)
 
-	company2, err := testQueries.GetCompany(context.Background(), company1.CompanyName)
+	company2, err := testQueries.GetCompanyByName(context.Background(), company1.CompanyName)
 
 	require.Error(t, err)
 	require.EqualError(t, err, sql.ErrNoRows.Error())

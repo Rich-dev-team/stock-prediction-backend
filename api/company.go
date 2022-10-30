@@ -36,13 +36,14 @@ type getCompanyRequest struct {
 	CompanyName string `uri:"company_name" binding:"required"`
 }
 
-func (server *Server) getCompany(ctx *gin.Context) {
+
+func (server *Server) getCompanyByName(ctx *gin.Context) {
 	var req getCompanyRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	company, err := server.store.GetCompany(ctx, req.CompanyName)
+	company, err := server.store.GetCompanyByName(ctx, req.CompanyName)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
@@ -75,4 +76,85 @@ func (server *Server) listCompany(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, companys)
+}
+
+type updateCompanyNameRequest struct {
+	ID          int64  `json:"id" binding:"required,min=1"`
+	CompanyName string `json:"company_name" binding:"required"`
+}
+
+func (server *Server) updateCompanyName(ctx *gin.Context) {
+	var req updateCompanyNameRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	arg := db.UpdateCompanyNameParams{
+		ID:          req.ID,
+		CompanyName: req.CompanyName,
+	}
+
+	company, err := server.store.UpdateCompanyName(ctx, arg)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, company)
+}
+
+type updateCompanyStockSymbolRequest struct {
+	ID          int64  `json:"id" binding:"required,min=1"`
+	StockSymbol string `json:"stock_symbol" binding:"required"`
+}
+
+func (server *Server) updateCompanyStockSymbol(ctx *gin.Context) {
+	var req updateCompanyStockSymbolRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	arg := db.UpdateCompanyStockSymbolParams{
+		ID:          req.ID,
+		StockSymbol: req.StockSymbol,
+	}
+
+	company, err := server.store.UpdateCompanyStockSymbol(ctx, arg)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, company)
+}
+
+type deleteCompanyRequest struct {
+	ID int64 `uri:"id" binding:"required,min=1"`
+}
+
+func (server *Server) deleteCompany(ctx *gin.Context) {
+	var req deleteCompanyRequest
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	err := server.store.DeleteCompany(ctx, req.ID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, errorResponse(err))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, true)
 }

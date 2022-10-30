@@ -42,15 +42,34 @@ func (q *Queries) DeleteCompany(ctx context.Context, id int64) error {
 	return err
 }
 
-const getCompany = `-- name: GetCompany :one
+const getCompanyById = `-- name: GetCompanyById :one
+SELECT id, company_name, stock_symbol, created_at
+FROM company
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetCompanyById(ctx context.Context, id int64) (Company, error) {
+	row := q.db.QueryRowContext(ctx, getCompanyById, id)
+	var i Company
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyName,
+		&i.StockSymbol,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getCompanyByName = `-- name: GetCompanyByName :one
 SELECT id, company_name, stock_symbol, created_at
 FROM company
 WHERE company_name = $1
 LIMIT 1
 `
 
-func (q *Queries) GetCompany(ctx context.Context, companyName string) (Company, error) {
-	row := q.db.QueryRowContext(ctx, getCompany, companyName)
+func (q *Queries) GetCompanyByName(ctx context.Context, companyName string) (Company, error) {
+	row := q.db.QueryRowContext(ctx, getCompanyByName, companyName)
 	var i Company
 	err := row.Scan(
 		&i.ID,

@@ -2,10 +2,15 @@
 INSERT INTO company(company_name, stock_symbol)
 VALUES($1, $2)
 RETURNING *;
--- name: GetCompany :one
+-- name: GetCompanyByName :one
 SELECT *
 FROM company
 WHERE company_name = $1
+LIMIT 1;
+-- name: GetCompanyById :one
+SELECT *
+FROM company
+WHERE id = $1
 LIMIT 1;
 -- name: ListCompany :many
 SELECT *

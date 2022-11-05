@@ -2,28 +2,26 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/lib/pq"
 	"log"
 	"stock-prediction-backend/api"
 	db "stock-prediction-backend/db/sqlc"
-)
+	"stock-prediction-backend/util"
 
-const (
-	dbDriver      = "postgres"
-	dbSource      = "postgresql://root:secret@localhost:5432/stockdb?sslmode=disable"
-	serverAddress = "0.0.0.0:8080"
+	_ "github.com/lib/pq"
 )
 
 func main() {
-	// connect to db
-	var err error
-	conn, err := sql.Open(dbDriver, dbSource)
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("Cannot load config: ", err)
+	}
+	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("Cannot connec to db", err)
 	}
 	store := db.NewStore(conn)
 	server := api.NewServer(store)
-	err = server.Start(serverAddress)
+	err = server.Start(config.ServerAddress)
 	if err != nil {
 		log.Fatal("Cannot start server", err)
 	}

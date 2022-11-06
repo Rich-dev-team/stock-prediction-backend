@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"log"
 	"os"
-	"stock-prediction-backend/util"
 	"testing"
+
+	util "github.com/Rich-dev-team/stock-prediction-backend/util"
 
 	_ "github.com/lib/pq"
 )
@@ -18,7 +19,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		log.Fatal("Cannot load config: ", err)
 	}
-	testDB, err = sql.Open(config.DBDriver, config.DBSource )
+	testDB, err = sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("Cannot connec to db", err)
 	}

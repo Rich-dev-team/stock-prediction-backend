@@ -3,8 +3,9 @@ package api
 import (
 	"database/sql"
 	"net/http"
-	db "stock-prediction-backend/db/sqlc"
 	"time"
+
+	db "github.com/Rich-dev-team/stock-prediction-backend/db/sqlc"
 
 	"github.com/gin-gonic/gin"
 )

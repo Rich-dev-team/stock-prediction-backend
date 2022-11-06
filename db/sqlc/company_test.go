@@ -3,8 +3,9 @@ package db
 import (
 	"context"
 	"database/sql"
-	"stock-prediction-backend/util"
 	"testing"
+
+	util "github.com/Rich-dev-team/stock-prediction-backend/util"
 
 	"github.com/stretchr/testify/require"
 )

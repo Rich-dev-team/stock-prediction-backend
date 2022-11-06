@@ -3,9 +3,10 @@ package main
 import (
 	"database/sql"
 	"log"
-	"stock-prediction-backend/api"
-	db "stock-prediction-backend/db/sqlc"
-	"stock-prediction-backend/util"
+
+	"github.com/Rich-dev-team/stock-prediction-backend/api"
+	db "github.com/Rich-dev-team/stock-prediction-backend/db/sqlc"
+	"github.com/Rich-dev-team/stock-prediction-backend/util"
 
 	_ "github.com/lib/pq"
 )

@@ -3,7 +3,8 @@ package api
 import (
 	"database/sql"
 	"net/http"
-	db "stock-prediction-backend/db/sqlc"
+
+	db "github.com/Rich-dev-team/stock-prediction-backend/db/sqlc"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,7 +36,6 @@ func (server *Server) createCompany(ctx *gin.Context) {
 type getCompanyRequest struct {
 	CompanyName string `uri:"company_name" binding:"required"`
 }
-
 
 func (server *Server) getCompanyByName(ctx *gin.Context) {
 	var req getCompanyRequest

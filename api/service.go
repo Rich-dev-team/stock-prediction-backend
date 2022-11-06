@@ -1,7 +1,7 @@
 package api
 
 import (
-	db "stock-prediction-backend/db/sqlc"
+	db "github.com/Rich-dev-team/stock-prediction-backend/db/sqlc"
 
 	"github.com/gin-gonic/gin"
 )

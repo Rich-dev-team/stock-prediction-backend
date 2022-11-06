@@ -14,3 +14,6 @@
 
 ## Debug postgres lock
 > https://wiki.postgresql.org/wiki/Lock_Monitoring
+
+## Add go env to path
+> `export PATH=$PATH:~/go/bin`

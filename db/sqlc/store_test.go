@@ -2,9 +2,10 @@ package db
 
 import (
 	"context"
-	"stock-prediction-backend/util"
 	"testing"
 	"time"
+
+	"github.com/Rich-dev-team/stock-prediction-backend/util"
 
 	"github.com/stretchr/testify/require"
 )

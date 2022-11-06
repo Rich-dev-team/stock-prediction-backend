@@ -16,4 +16,7 @@
 > https://wiki.postgresql.org/wiki/Lock_Monitoring
 
 ## Add go env to path
-> `export PATH=$PATH:~/go/bin`
+> `export PATH=$PATH:$HOME/go/bin`
+
+## trouble shooting in mockgen
+> if you cannot find go/src/xxx, then add `-build_flags=--mod=mod` to command

@@ -29,6 +29,9 @@ connDB:
 server:
 	go run main.go
 
-PHONY= postgres createdb dropdb migrateUp migrateDown sqlc test connDB server
+mock:
+	mockgen -build_flags=--mod=mod -package=mockdb -destination db/mock/store.go github.com/Rich-dev-team/stock-prediction-backend/db/sqlc Store
+
+PHONY= postgres createdb dropdb migrateUp migrateDown sqlc test connDB server mock
 
 .PHONY: $(PHONY)

@@ -20,3 +20,6 @@
 
 ## trouble shooting in mockgen
 > if you cannot find go/src/xxx, then add `-build_flags=--mod=mod` to command
+
+## show go testcase coverage settings
+> https://dev.to/vuong/golang-in-vscode-show-code-coverage-of-after-saving-test-8g0

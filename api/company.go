@@ -34,7 +34,7 @@ func (server *Server) createCompany(ctx *gin.Context) {
 }
 
 type getCompanyRequest struct {
-	CompanyName string `uri:"company_name" binding:"required"`
+	CompanyName string `uri:"company_name" binding:"required,max=30"`
 }
 
 func (server *Server) getCompanyByName(ctx *gin.Context) {

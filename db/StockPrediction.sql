@@ -1,7 +1,7 @@
 CREATE TABLE "company" (
   "id" bigserial PRIMARY KEY,
-  "company_name" varchar NOT NULL,
-  "stock_symbol" varchar NOT NULL,
+  "company_name" varchar UNIQUE NOT NULL,
+  "stock_symbol" varchar UNIQUE NOT NULL,
   "created_at" date DEFAULT (now())
 );
 CREATE TABLE "stock_price" (

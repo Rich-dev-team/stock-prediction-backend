@@ -14,8 +14,12 @@ migrateup:
 migratedown:
 	migrate -path ./db/migration/ -database "postgresql://root:secret@localhost:5432/stockdb?sslmode=disable" -verbose down
 
-cleanDirty:
-	migrate -path ./db/migration/ -database "postgresql://root:secret@localhost:5432/stockdb?sslmode=disable" -verbose force 1
+migrateup1:
+	migrate -path ./db/migration/ -database "postgresql://root:secret@localhost:5432/stockdb?sslmode=disable" -verbose up 1
+
+migratedown1:
+	migrate -path ./db/migration/ -database "postgresql://root:secret@localhost:5432/stockdb?sslmode=disable" -verbose down 1
+
 
 sqlc:
 	sqlc generate
@@ -32,6 +36,6 @@ server:
 mock:
 	mockgen -build_flags=--mod=mod -package=mockdb -destination db/mock/store.go github.com/Rich-dev-team/stock-prediction-backend/db/sqlc Store
 
-PHONY= postgres createdb dropdb migrateUp migrateDown sqlc test connDB server mock
+PHONY= postgres createdb dropdb migrateUp migrateDown migrateUp1 migrateDown1 sqlc test connDB server mock
 
 .PHONY: $(PHONY)

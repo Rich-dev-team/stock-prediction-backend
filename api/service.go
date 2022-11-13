@@ -2,8 +2,10 @@ package api
 
 import (
 	db "github.com/Rich-dev-team/stock-prediction-backend/db/sqlc"
+	"github.com/go-playground/validator/v10"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 // Server serves HTTP requests for our stock
@@ -17,6 +19,13 @@ func NewServer(store db.Store) *Server {
 	server := &Server{store: store}
 
 	router := gin.Default()
+
+	// binding validator
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("stockPrices", validateStockPrices)
+		v.RegisterValidation("companysId", validateCompanysId)
+	}
+
 	// company
 	router.POST("/companys/create", server.createCompany)
 	router.GET("/companys/list/:company_name", server.getCompanyByName)
@@ -26,7 +35,7 @@ func NewServer(store db.Store) *Server {
 	router.DELETE("/companys/:id", server.deleteCompany)
 	// stock price
 	router.POST("/stockprice/create/one", server.createStockPrice)
-	// router.POST("/stockprice/create/batch", server.createBatchStockPrice)
+	router.POST("/stockprice/create/batch", server.createBatchStockPrices)
 	router.GET("/stockprice/lists/all", server.listAllStockPrice)
 	router.GET("/stockprice/lists/range", server.listStockPriceByRange)
 	router.PUT("/stockprice/price", server.UpdateStockPrice)
